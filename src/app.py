@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from flask import Flask, request, render_template
+from datacollector import load_files
 
 app = Flask(__name__)
 
@@ -11,6 +12,9 @@ def main():
 @app.route('/upload', methods=['POST'])
 def upload():
     files = request.files.getlist("documents")
+    documents = load_files(files)
+
+    # Message for successfully uploading documents
     filenames = []
     for file in files:
         if file != None and file.filename != '':
