@@ -7,6 +7,8 @@
             .inputdiv { padding: 10px; }
             .btn-primary { background-color: rgb(0, 159, 255); color: white; margin-left: 10px; }
             .answers-box { width: calc(100% - 40px); height: calc(100% - 180px); margin-left: 20px; border: 1px solid #000; overflow-y: auto; }
+            .qnabox { text-align: left; padding: 5px; }
+            .questiontext { font-size: medium; font-weight: bolder; }
         </style>
     </head>
     <body>
@@ -36,8 +38,20 @@
                     url: "/",
                     data: {'prompt': question },
                     success: function (data) {
-                        let answer_data = `<div>${ data.answer }</div>`;
-                        $("#answers").append(answer_data);
+                        let question_data = `
+                            <div class="qnabox questiontext">
+                                <img src="{{ url_for('static', filename='images/question.png') }}" alt="Q: " width="16" height="16">
+                                ${ question }
+                            </div>
+                        `;
+                        let answer_data = `
+                            <div class="qnabox answertext">
+                                <img src="{{ url_for('static', filename='images/answer.png') }}" alt="A: " width="16" height="16">
+                                ${ data.answer }
+                            </div>
+                        `;
+                        $("#answers").prepend(answer_data);
+                        $("#answers").prepend(question_data);
                     }
                 });
             });
