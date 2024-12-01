@@ -6,6 +6,7 @@
             .inputbox { width: calc(100% - 80px); }
             .inputdiv { padding: 10px; }
             .btn-primary { background-color: rgb(0, 159, 255); color: white; margin-left: 10px; }
+            .answers-box { width: calc(100% - 40px); height: calc(100% - 180px); margin-left: 20px; border: 1px solid #000; overflow-y: auto; }
         </style>
     </head>
     <body>
@@ -20,6 +21,7 @@
                 <input id="chat-input" type="text" class="inputbox" placeholder="Type your question here">
                 <button id="chat-button" class="btn btn-primary">Chat</button>
             </div>
+            <div id="answers" class="answers-box"></div>
         </main>
     </body>
 </html>
