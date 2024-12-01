@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 from datacollector import load_files
 from database import save_to_database
 from dataanalyzer import chat
@@ -10,14 +10,25 @@ app = Flask(__name__)
 chat_history = []
 
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def main():
-    return render_template("index.html")
+    global chat_history
+
+    if request.method == 'POST':
+        # chat with database using Google's Gemini
+        prompt = request.form["prompt"]
+        answer, chat_history = chat(prompt, chat_history, "chroma")
+
+        # Create response in Json format for request from web page
+        response = {}
+        response["answer"] = answer
+        return jsonify(response), 200
+    else:
+        chat_history = []
+        return render_template("index.html")
 
 @app.route('/upload', methods=['POST'])
 def upload():
-    global chat_history
-
     files = request.files.getlist("documents")
     documents = load_files(files)
 
@@ -37,9 +48,6 @@ def upload():
         save_to_database(documents, "chroma")
 
         message += "<br>File" + is_are + " also saved to database."
-
-    # Test the chat_with_chroma() function
-    # answer, chat_history = chat("who is openai", chat_history, "chroma")
 
     return message
 

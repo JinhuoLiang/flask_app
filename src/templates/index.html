@@ -23,5 +23,24 @@
             </div>
             <div id="answers" class="answers-box"></div>
         </main>
+
+        <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+        <script>
+            $("#chat-button").click(function(){
+                var question = $("#chat-input").val();
+                $("#question").val(question);
+        
+                // AJAX call to Python Flask server
+                $.ajax({
+                    type: "POST",
+                    url: "/",
+                    data: {'prompt': question },
+                    success: function (data) {
+                        let answer_data = `<div>${ data.answer }</div>`;
+                        $("#answers").append(answer_data);
+                    }
+                });
+            });
+        </script>
     </body>
 </html>
