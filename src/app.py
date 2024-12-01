@@ -27,17 +27,19 @@ def upload():
         if file != None and file.filename != '':
             filenames.append(file.filename)
 
-    message = "The following file(s) is/are successfully uploaded: " + ", ".join(filenames) + "."
+    count = len(files)
+    is_are = "s are" if (count > 1) else " is"
+    message = "The following file" + is_are + " successfully uploaded: " + ", ".join(filenames) + "."
 
     # Save documents to vector database
     if documents and len(documents) > 0:
         # Create a vector store (database) using Chroma
         save_to_database(documents, "chroma")
 
-        message += "<br>File(s) is/are also saved to database."
+        message += "<br>File" + is_are + " also saved to database."
 
     # Test the chat_with_chroma() function
-    answer, chat_history = chat("who is openai", chat_history, "chroma")
+    # answer, chat_history = chat("who is openai", chat_history, "chroma")
 
     return message
 
