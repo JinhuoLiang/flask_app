@@ -2,9 +2,13 @@
 
 from flask import Flask, request, render_template
 from datacollector import load_files
-from database import save_to_chroma
+from database import save_to_database
+from dataanalyzer import chat
 
 app = Flask(__name__)
+
+chat_history = []
+
 
 @app.route("/")
 def main():
@@ -12,6 +16,8 @@ def main():
 
 @app.route('/upload', methods=['POST'])
 def upload():
+    global chat_history
+
     files = request.files.getlist("documents")
     documents = load_files(files)
 
@@ -21,14 +27,17 @@ def upload():
         if file != None and file.filename != '':
             filenames.append(file.filename)
 
-    message = "The following documents are successfully uploaded: " + ", ".join(filenames) + "."
+    message = "The following file(s) is/are successfully uploaded: " + ", ".join(filenames) + "."
 
     # Save documents to vector database
     if documents and len(documents) > 0:
         # Create a vector store (database) using Chroma
-        save_to_chroma(documents, "chroma")
+        save_to_database(documents, "chroma")
 
-        message += " Files are also saved to database."
+        message += "<br>File(s) is/are also saved to database."
+
+    # Test the chat_with_chroma() function
+    answer, chat_history = chat("who is openai", chat_history, "chroma")
 
     return message
 

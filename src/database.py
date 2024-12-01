@@ -4,7 +4,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 
 # Create a vector store (database) using Chroma
-def save_to_chroma(documents, databasename="chroma"):
+def save_to_database(documents, databasename="chroma"):
     # Check if documents is None or empty
     if documents is None or len(documents) == 0:
         return
