@@ -3,9 +3,9 @@
         <title>Chat With Private Data Using Gemini from Google</title>
     </head>
     <body>
-        <form action="/echo_user_input" method="POST">
-            <input name="user_input">
-            <input type="submit" value="Submit!">
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <input type="file" id='documents' name="documents" multiple />
+            <input type="submit" value="Upload">
         </form>
     </body>
 </html>

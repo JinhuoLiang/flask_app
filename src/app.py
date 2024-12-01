@@ -8,10 +8,10 @@ app = Flask(__name__)
 def main():
     return render_template("index.html")
 
-@app.route("/echo_user_input", methods=["POST"])
-def echo_input():
-    input_text = request.form.get("user_input", "")
-    return "You entered: " + input_text
+@app.route('/upload', methods=['POST'])
+def upload():
+    files = request.files.getlist("documents")
+    return "Documents Uploaded Successfully."
 
 if __name__ == '__main__':
    app.run()
