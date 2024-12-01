@@ -2,6 +2,7 @@
 
 from flask import Flask, request, render_template
 from datacollector import load_files
+from database import save_to_chroma
 
 app = Flask(__name__)
 
@@ -21,6 +22,13 @@ def upload():
             filenames.append(file.filename)
 
     message = "The following documents are successfully uploaded: " + ", ".join(filenames) + "."
+
+    # Save documents to vector database
+    if documents and len(documents) > 0:
+        # Create a vector store (database) using Chroma
+        save_to_chroma(documents, "chroma")
+
+        message += " Files are also saved to database."
 
     return message
 
