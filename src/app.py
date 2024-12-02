@@ -17,7 +17,7 @@ def main():
     if request.method == 'POST':
         # chat with database using Google's Gemini
         prompt = request.form["prompt"]
-        answer, chat_history = chat(prompt, chat_history, "chroma")
+        answer, chat_history = chat(prompt, chat_history, "faiss")
 
         # Create response in Json format for request from web page
         response = {}
@@ -44,10 +44,12 @@ def upload():
 
     # Save documents to vector database
     if documents and len(documents) > 0:
-        # Create a vector store (database) using Chroma
-        save_to_database(documents, "chroma")
+        # Create a vector store (database) using FAISS
+        save_to_database(documents, "faiss")
 
         message += "<br>File" + is_are + " also saved to database."
+
+    message += "<br>Please use the left arrow at the top-left corner of the browser to go back to continue to chat."
 
     return message
 

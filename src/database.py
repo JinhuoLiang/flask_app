@@ -1,23 +1,32 @@
-from langchain.text_splitter import CharacterTextSplitter
-from langchain_community.vectorstores import Chroma
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import FAISS
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 
-# Create a vector store (database) using Chroma
-def save_to_database(documents, databasename="chroma"):
+# Create a vector store (database) using FAISS
+def save_to_database(documents, databasename="faiss"):
     # Check if documents is None or empty
     if documents is None or len(documents) == 0:
         return
 
-    # Use CharacterTextSplitter to split the large text into smaller chunks
-    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=20)
-    chunks = text_splitter.split_documents(documents)
+    # Append all documents to form a large text string.
+    text = " "
+    for document in documents:
+        text += document.page_content
+
+    # Remove all problematic characters.
+    text= text.replace('»', '').replace('\'','').replace('/','').replace(':','-').replace('(','').replace(')','').replace("*",'')
+    text= text.encode('ascii', errors='ignore').decode()
+
+    # Use RecursiveCharacterTextSplitter splits the large text into specified chunk size.
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
+    chunks = text_splitter.split_text(text)
 
     # Create embeddings using a Google Generative AI model
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
-    # Convert the document chunks to embedding
-    vectordb = Chroma.from_documents(chunks, embedding=embeddings, persist_directory=databasename)
+    # Create a vector store using FAISS from the provided text chunks and embeddings
+    vectordb = FAISS.from_texts(chunks, embedding=embeddings)
 
-    # Save the vectordb locally with the name "chroma"
-    vectordb.persist()
+    # Save the vectordb locally with the name "faiss"
+    vectordb.save_local(databasename)

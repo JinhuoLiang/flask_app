@@ -1,9 +1,9 @@
 from langchain.chains import ConversationalRetrievalChain
-from langchain_community.vectorstores import Chroma
+from langchain_community.vectorstores import FAISS
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 
-# Chat to private data saved in Chroma vector database
-def chat(question, history, databasename="chroma"):
+# Chat to private data saved in FAISS vector database
+def chat(question, history, databasename="faiss"):
     # Check values of the passed parameters
     if question is None or question == '':
         return "error: please provide a question", history
@@ -11,8 +11,8 @@ def chat(question, history, databasename="chroma"):
     # Create embeddings using a Google Generative AI model
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
-    # Load a Chroma vector database from a local file
-    vectordb = Chroma(embedding_function=embeddings, persist_directory=databasename)
+    # Load a FAISS vector database from a local file
+    vectordb = FAISS.load_local(databasename, embeddings, allow_dangerous_deserialization=True)
 
     # Create a question-answering chain with the specified model and vector database
     chain = ConversationalRetrievalChain.from_llm(
@@ -31,4 +31,3 @@ def chat(question, history, databasename="chroma"):
     history.append((question, answer))
 
     return answer, history
-
